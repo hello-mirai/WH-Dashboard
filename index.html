@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV Analyzer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/papaparse/5.3.0/papaparse.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+        }
+        .container {
+            max-width: 500px;
+            margin: auto;
+            text-align: center;
+        }
+        .results {
+            margin-top: 20px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CSV Analyzer</h1>
+        <input type="file" id="fileInput" accept=".csv">
+        <button onclick="analyzeFile()">Analyze</button>
+        <div class="results" id="results"></div>
+    </div>
+
+    <script>
+        function analyzeFile() {
+            const fileInput = document.getElementById("fileInput");
+            const resultsDiv = document.getElementById("results");
+
+            if (fileInput.files.length === 0) {
+                alert("Please select a file first.");
+                return;
+            }
+
+            const file = fileInput.files[0];
+
+            Papa.parse(file, {
+                header: true,
+                dynamicTyping: true,
+                complete: function(results) {
+                    const data = results.data;
+                    const fields = results.meta.fields;
+                    let summary = "<h2>CSV Summary</h2>";
+
+                    summary += `<p>Number of records: ${data.length}</p>`;
+                    summary += `<p>Fields: ${fields.join(", ")}</p>`;
+
+                    resultsDiv.innerHTML = summary;
+                },
+                error: function(error) {
+                    alert(`Error parsing CSV file: ${error.message}`);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
